@@ -69,44 +69,6 @@ export default function Hero() {
     return () => ctx.revert(); // Cleanup animation state on unmount
   }, []);
 
-  useEffect(() => {
-    let active = true;
-
-    const loadResumeUrl = async () => {
-      try {
-        const supabase = createClient();
-        
-        // Coba ambil dari database settings dulu
-        const { data: settingsData } = await supabase
-          .from('site_settings')
-          .select('value')
-          .eq('key', 'resume_url')
-          .single();
-
-        if (settingsData?.value) {
-          setResumeUrl(settingsData.value);
-        } else {
-          // Fallback ke file fisik lama
-          const { data } = supabase.storage.from('resume').getPublicUrl('resume.pdf');
-          if (data?.publicUrl) {
-            const response = await fetch(data.publicUrl, { method: 'HEAD' });
-            if (active && response.ok) {
-              setResumeUrl(data.publicUrl);
-            }
-          }
-        }
-      } catch {
-        // fallback
-      }
-    };
-
-    loadResumeUrl();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
   return (
     <section id="home" ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* 3D Background */}
@@ -142,12 +104,11 @@ export default function Hero() {
             {t.hero.viewProjects}
           </Link>
           <a
-            href={resumeUrl}
+            href="/resume/noval-abdillah.pdf"
             target="_blank"
-            rel="noopener noreferrer"
             className="px-8 py-4 border border-zinc-700 hover:border-green-500 text-zinc-300 hover:text-green-500 font-semibold rounded-lg transition-all duration-300 flex items-center gap-2"
           >
-            <ExternalLinkIcon className="w-5 h-5" />
+            <DownloadIcon className="w-5 h-5" />
             {t.hero.downloadResume}
           </a>
         </div>
