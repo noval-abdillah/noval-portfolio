@@ -38,7 +38,7 @@ export default function Hero() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
-  const [resumeUrl] = useState('/resume/noval-abdillah.pdf');
+  const [resumeUrl] = useState('/resume/CV_Frontend_Backend (1).pdf');
 
   useEffect(() => {
     // Use gsap.context for proper cleanup on unmount/re-renders in React 18+
