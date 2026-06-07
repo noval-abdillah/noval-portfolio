@@ -76,16 +76,28 @@ export default function Hero() {
     const loadResumeUrl = async () => {
       try {
         const supabase = createClient();
-        const { data } = supabase.storage.from('resume').getPublicUrl('resume.pdf');
+        
+        // Coba ambil dari database settings dulu
+        const { data: settingsData } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'resume_url')
+          .single();
 
-        if (data?.publicUrl) {
-          const response = await fetch(data.publicUrl, { method: 'HEAD' });
-          if (active && response.ok) {
-            setResumeUrl(`${data.publicUrl}?v=${Date.now()}`);
+        if (settingsData?.value) {
+          setResumeUrl(settingsData.value);
+        } else {
+          // Fallback ke file fisik lama
+          const { data } = supabase.storage.from('resume').getPublicUrl('resume.pdf');
+          if (data?.publicUrl) {
+            const response = await fetch(data.publicUrl, { method: 'HEAD' });
+            if (active && response.ok) {
+              setResumeUrl(data.publicUrl);
+            }
           }
         }
       } catch {
-        // fallback to bundled resume file
+        // fallback
       }
     };
 

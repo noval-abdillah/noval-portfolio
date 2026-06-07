@@ -109,7 +109,19 @@ CREATE POLICY "Admin can delete resume" ON storage.objects
     bucket_id = 'resume' AND auth.uid() IN (SELECT user_id FROM public.admins)
   );
 
--- Add your admin user(s) after creating them in Supabase Auth
--- Example:
--- INSERT INTO public.admins (user_id, email) VALUES ('your-admin-uuid', 'admin@example.com');
--- Replace with the actual Auth user_id from Supabase.
+-- Create settings table for dynamic site configuration
+CREATE TABLE IF NOT EXISTS public.site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view settings" ON public.site_settings
+  FOR SELECT USING (true);
+
+CREATE POLICY "Admin can manage settings" ON public.site_settings
+  FOR ALL TO authenticated USING (auth.uid() IN (SELECT user_id FROM public.admins));
+
+-- Insert default resume value
+INSERT INTO public.site_settings (key, value) VALUES ('resume_url', '/resume/noval-abdillah.pdf') ON CONFLICT DO NOTHING;

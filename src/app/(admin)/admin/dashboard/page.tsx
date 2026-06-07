@@ -112,14 +112,15 @@ export default function AdminDashboard() {
     }
 
     const supabase = createClient();
-    const filePath = 'resume.pdf';
+    // Gunakan nama asli file dengan timestamp untuk menghindari duplikasi
+    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+    const filePath = fileName;
 
-    // Proses Unggah dengan paksa metadata inline (untuk preview, bukan download)
     const { error: uploadError } = await supabase.storage
       .from('resume')
       .upload(filePath, file, {
-        cacheControl: '0',
-        upsert: true,
+        cacheControl: '3600',
+        upsert: false,
         contentType: 'application/pdf',
       });
 
@@ -127,40 +128,50 @@ export default function AdminDashboard() {
       throw new Error(`Gagal mengunggah resume: ${uploadError.message}`);
     }
 
-    // Verifikasi fisik: pastikan file ada di list storage
-    const { data: files } = await supabase.storage.from('resume').list();
-    const exists = files?.some(f => f.name === 'resume.pdf');
-    if (!exists) {
-      throw new Error('Upload berhasil tapi file tidak terdeteksi di server. Cek RLS Policy Supabase Anda.');
-    }
-
     const { data: publicUrlData } = supabase.storage
       .from('resume')
-      .getPublicUrl('resume.pdf');
+      .getPublicUrl(filePath);
 
     if (!publicUrlData || !publicUrlData.publicUrl) {
       throw new Error('Gagal mendapatkan tautan publik resume.');
     }
 
-    return `${publicUrlData.publicUrl}?t=${Date.now()}`;
+    const finalUrl = publicUrlData.publicUrl;
+
+    // Simpan URL baru ke database
+    await supabase
+      .from('site_settings')
+      .upsert({ key: 'resume_url', value: finalUrl });
+
+    return finalUrl;
   };
 
   const loadCurrentResumeUrl = async () => {
     try {
       const supabase = createClient();
-      const { data: publicUrlData } = supabase.storage
-        .from('resume')
-        .getPublicUrl('resume.pdf');
+      const { data } = await supabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'resume_url')
+        .single();
 
-      if (publicUrlData?.publicUrl) {
-        // Cek apakah file ada, jika ya tampilkan dengan cache-buster
-        const response = await fetch(publicUrlData.publicUrl, { method: 'HEAD' });
-        if (response.ok) {
-          setCurrentResumeUrl(`${publicUrlData.publicUrl}?v=${Date.now()}`);
+      if (data?.value) {
+        setCurrentResumeUrl(data.value);
+      } else {
+        // Fallback ke file fisik Supabase jika ada
+        const { data: publicUrlData } = supabase.storage
+          .from('resume')
+          .getPublicUrl('resume.pdf');
+        
+        if (publicUrlData?.publicUrl) {
+          const response = await fetch(publicUrlData.publicUrl, { method: 'HEAD' });
+          if (response.ok) {
+            setCurrentResumeUrl(publicUrlData.publicUrl);
+          }
         }
       }
     } catch {
-      // Jika tidak tersedia, tetap gunakan status awal tanpa menampilkan URL.
+      // Fallback
     }
   };
   const triggerRevalidation = async () => {
