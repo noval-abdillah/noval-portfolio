@@ -316,6 +316,16 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-4">
             <button
+              type="button"
+              onClick={() => {
+                const target = document.getElementById('resume-section');
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold rounded-lg transition-colors text-sm"
+            >
+              Kelola Resume
+            </button>
+            <button
               onClick={() => setShowForm(!showForm)}
               className="px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors flex items-center gap-2 text-sm"
             >
@@ -353,7 +363,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Resume Upload Section */}
-        <div className="bg-zinc-900/90 p-8 rounded-2xl border border-zinc-800 mb-12">
+        <div id="resume-section" className="bg-zinc-900/90 p-8 rounded-2xl border border-zinc-800 mb-12">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-xl font-bold text-white">Kelola Resume</h2>
