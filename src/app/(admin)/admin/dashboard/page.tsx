@@ -112,16 +112,23 @@ export default function AdminDashboard() {
       throw new Error('Format berkas harus PDF.');
     }
 
-    // UPLOAD KE VERCEL BLOB (Pasti Publik & Stabil)
     try {
-      const blob = await put(`resume/${Date.now()}-${file.name}`, file, {
-        access: 'public',
-        addRandomSuffix: true,
-      });
+      const response = await fetch(
+        `/api/resume/upload?filename=${encodeURIComponent(file.name)}`,
+        {
+          method: 'POST',
+          body: file,
+        },
+      );
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Gagal mengunggah file.');
+      }
+
+      const blob = await response.json();
       const finalUrl = blob.url;
 
-      // Tetap catat di database agar Home Page selalu terupdate linknya
       const supabase = createClient();
       await supabase.from('site_settings').upsert({ key: 'resume_url', value: finalUrl });
 
