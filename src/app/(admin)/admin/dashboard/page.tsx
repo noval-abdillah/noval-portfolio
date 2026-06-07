@@ -112,8 +112,10 @@ export default function AdminDashboard() {
     }
 
     const supabase = createClient();
-    // Gunakan nama asli file dengan timestamp untuk menghindari duplikasi
-    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+    // Gunakan nama file unik agar Supabase tidak men-cache file lama
+    const timestamp = Date.now();
+    const cleanFileName = file.name.replace(/\s+/g, '_').replace(/[^\w.-]/g, '');
+    const fileName = `${timestamp}-${cleanFileName}`;
     const filePath = fileName;
 
     const { error: uploadError } = await supabase.storage
@@ -121,7 +123,7 @@ export default function AdminDashboard() {
       .upload(filePath, file, {
         cacheControl: '3600',
         upsert: false,
-        contentType: 'application/pdf',
+        contentType: 'application/pdf'
       });
 
     if (uploadError) {
@@ -138,10 +140,14 @@ export default function AdminDashboard() {
 
     const finalUrl = publicUrlData.publicUrl;
 
-    // Simpan URL baru ke database
-    await supabase
+    // Simpan URL terbaru ke database settings
+    const { error: settingsError } = await supabase
       .from('site_settings')
       .upsert({ key: 'resume_url', value: finalUrl });
+
+    if (settingsError) {
+      console.error('Gagal update settings:', settingsError.message);
+    }
 
     return finalUrl;
   };
@@ -158,20 +164,10 @@ export default function AdminDashboard() {
       if (data?.value) {
         setCurrentResumeUrl(data.value);
       } else {
-        // Fallback ke file fisik Supabase jika ada
-        const { data: publicUrlData } = supabase.storage
-          .from('resume')
-          .getPublicUrl('resume.pdf');
-        
-        if (publicUrlData?.publicUrl) {
-          const response = await fetch(publicUrlData.publicUrl, { method: 'HEAD' });
-          if (response.ok) {
-            setCurrentResumeUrl(publicUrlData.publicUrl);
-          }
-        }
+        setCurrentResumeUrl('/resume/noval-abdillah.pdf');
       }
     } catch {
-      // Fallback
+      setCurrentResumeUrl('/resume/noval-abdillah.pdf');
     }
   };
   const triggerRevalidation = async () => {

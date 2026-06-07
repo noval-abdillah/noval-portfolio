@@ -40,33 +40,49 @@ export default function Hero() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
   const [resumeUrl, setResumeUrl] = useState('/resume/noval-abdillah.pdf');
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
   useEffect(() => {
-    // Use gsap.context for proper cleanup on unmount/re-renders in React 18+
     const ctx = gsap.context(() => {
-      // Headline fade-up (removed the manual split-span logic that was destroying HTML)
       gsap.fromTo(
         headlineRef.current,
         { y: 50, opacity: 0 },
         { y: 0, opacity: 1, duration: 1, ease: 'power4.out', delay: 0.3 }
       );
-
-      // Subtitle fade-up
       gsap.fromTo(
         subtitleRef.current,
         { y: 40, opacity: 0 },
         { y: 0, opacity: 1, duration: 1, delay: 0.6, ease: 'power3.out' }
       );
-
-      // CTA fade-up
       gsap.fromTo(
         ctaRef.current,
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, delay: 0.9, ease: 'power3.out' }
       );
     }, containerRef);
+    return () => ctx.revert();
+  }, []);
 
-    return () => ctx.revert(); // Cleanup animation state on unmount
+  useEffect(() => {
+    let active = true;
+    const loadResumeUrl = async () => {
+      try {
+        const supabase = createClient();
+        const { data: settingsData } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'resume_url')
+          .single();
+
+        if (settingsData?.value && active) {
+          setResumeUrl(settingsData.value);
+        }
+      } catch (error) {
+        console.error('Error loading resume:', error);
+      }
+    };
+    loadResumeUrl();
+    return () => { active = false; };
   }, []);
 
   return (
@@ -103,16 +119,54 @@ export default function Hero() {
           >
             {t.hero.viewProjects}
           </Link>
-          <a
-            href="/resume/noval-abdillah.pdf"
-            target="_blank"
+          <button
+            onClick={() => setIsResumeModalOpen(true)}
             className="px-8 py-4 border border-zinc-700 hover:border-green-500 text-zinc-300 hover:text-green-500 font-semibold rounded-lg transition-all duration-300 flex items-center gap-2"
           >
             <DownloadIcon className="w-5 h-5" />
             {t.hero.downloadResume}
-          </a>
+          </button>
         </div>
       </div>
+
+      {/* Full-Screen PDF Viewer Modal */}
+      {isResumeModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="w-full h-full flex flex-col">
+            {/* Modal Header */}
+            <div className="bg-zinc-900/50 border-b border-zinc-800 p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/50" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+                </div>
+                <span className="text-zinc-400 text-sm font-mono tracking-tight">viewer://noval_resume.pdf</span>
+              </div>
+              <button 
+                onClick={() => setIsResumeModalOpen(false)}
+                className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-all flex items-center gap-2 text-sm font-medium"
+              >
+                <span>Tutup</span>
+                <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-xs bg-zinc-900 border border-zinc-700 rounded text-zinc-500">ESC</kbd>
+              </button>
+            </div>
+            
+            {/* PDF Viewer Frame */}
+            <div className="flex-1 relative bg-zinc-950">
+              <iframe 
+                src={`${resumeUrl}#toolbar=0&navpanes=0&scrollbar=1`} 
+                className="w-full h-full border-none opacity-0 animate-in fade-in delay-300 duration-700"
+                title="Resume Preview"
+                onLoad={(e) => (e.currentTarget.style.opacity = '1')}
+              />
+              <div className="absolute inset-0 flex items-center justify-center -z-10">
+                <div className="animate-pulse text-zinc-800 font-mono">Memuat Dokumen...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
