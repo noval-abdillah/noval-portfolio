@@ -80,7 +80,7 @@ export default function Hero() {
         if (data?.publicUrl) {
           const response = await fetch(data.publicUrl, { method: 'HEAD' });
           if (active && response.ok) {
-            setResumeUrl(data.publicUrl);
+            setResumeUrl(`${data.publicUrl}?v=${Date.now()}`);
           }
         }
       } catch {
