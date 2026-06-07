@@ -23,6 +23,7 @@ export default function AdminDashboard() {
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [showResumeModal, setShowResumeModal] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   
   // Status and feedback messaging states
@@ -317,10 +318,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-4">
             <button
               type="button"
-              onClick={() => {
-                const target = document.getElementById('resume-section');
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
+              onClick={() => setShowResumeModal(true)}
               className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold rounded-lg transition-colors text-sm"
             >
               Kelola Resume
@@ -352,10 +350,7 @@ export default function AdminDashboard() {
             </div>
             <button
               type="button"
-              onClick={() => {
-                const target = document.getElementById('resume-section');
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
+              onClick={() => setShowResumeModal(true)}
               className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-colors text-sm"
             >
               Buka Panel Resume
@@ -384,11 +379,30 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* Resume Upload Section */}
-        <div id="resume-section" className="bg-zinc-900/90 p-8 rounded-2xl border border-zinc-800 mb-12">
+        {/* Resume Upload Modal */}
+        {showResumeModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 p-6 flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-white">Kelola Resume</h2>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowResumeModal(false);
+                    setResumeError(null);
+                    setResumeSuccess(null);
+                  }}
+                  className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+                >
+                  <svg className="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
-              <h2 className="text-xl font-bold text-white">Kelola Resume</h2>
+              <h2 className="text-xl font-bold text-white">Upload Resume Baru</h2>
               <p className="text-sm text-zinc-400 mt-1">
                 Unggah file PDF baru untuk resume. File lama akan otomatis tergantikan.
               </p>
@@ -493,12 +507,32 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
-        </div>
+              </div>
+            </div>
+          </div>
+        )}
 
-        {/* Add Project Form Drawer/Container */}
+        {/* Add Project Form Modal */}
         {showForm && (
-          <div className="bg-zinc-900/90 p-8 rounded-2xl border border-zinc-800 mb-12 animate-in slide-in-from-top-4 fade-in duration-300">
-            <h2 className="text-xl font-bold text-white mb-6">Tambah Proyek Baru</h2>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 p-6 flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-white">Tambah Proyek Baru</h2>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForm(false);
+                    setFormError(null);
+                    setFormSuccess(null);
+                  }}
+                  className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+                >
+                  <svg className="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6">
             
             <form onSubmit={handleSubmit} className="space-y-6">
               
@@ -602,13 +636,13 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 pt-4">
+              <div className="flex items-center gap-4 pt-6 border-t border-zinc-800">
                 <button
                   type="submit"
                   disabled={formLoading || uploading}
-                  className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-500 disabled:bg-green-600/40 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
+                  className="flex-1 px-8 py-4 bg-green-600 hover:bg-green-500 disabled:bg-green-600/40 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-3 text-base"
                 >
-                  {(formLoading || uploading) && <SVGSpinner size={18} />}
+                  {(formLoading || uploading) && <SVGSpinner size={20} />}
                   <span>Simpan Proyek</span>
                 </button>
                 <button
@@ -618,13 +652,15 @@ export default function AdminDashboard() {
                     setFormError(null);
                     setFormSuccess(null);
                   }}
-                  className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-lg transition-colors text-sm"
+                  className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-lg transition-colors text-base"
                 >
                   Batal
                 </button>
               </div>
             </form>
+            </div>
           </div>
+        </div>
         )}
 
         {/* Existing Projects Grid */}
