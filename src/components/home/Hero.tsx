@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { DownloadIcon } from '@/components/ui';
+import { DownloadIcon, CloseIcon } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -39,6 +39,7 @@ export default function Hero() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
   const [resumeUrl] = useState('/resume/CV_Frontend_Backend (1).pdf');
+  const [showResume, setShowResume] = useState(false);
 
   useEffect(() => {
     // Use gsap.context for proper cleanup on unmount/re-renders in React 18+
@@ -102,17 +103,69 @@ export default function Hero() {
           >
             {t.hero.viewProjects}
           </Link>
-          <a
-            href={resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => setShowResume(true)}
             className="px-8 py-4 border border-zinc-700 hover:border-green-500 text-zinc-300 hover:text-green-500 font-semibold rounded-lg transition-all duration-300 flex items-center gap-2"
           >
             <DownloadIcon className="w-5 h-5" />
             {t.hero.downloadResume}
-          </a>
+          </button>
         </div>
       </div>
+
+      {/* Resume Preview Modal */}
+      {showResume && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 md:p-6 animate-in fade-in duration-300">
+          <div className="relative w-full max-w-5xl h-[85vh] bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-xl">
+              <h3 className="text-xl font-bold text-white tracking-tight">Curriculum Vitae</h3>
+              <button
+                onClick={() => setShowResume(false)}
+                className="p-2 hover:bg-zinc-800 rounded-full transition-colors group"
+                aria-label="Close modal"
+              >
+                <CloseIcon className="w-6 h-6 text-zinc-400 group-hover:text-white" />
+              </button>
+            </div>
+
+            {/* PDF Viewer */}
+            <div className="flex-1 bg-zinc-950 overflow-hidden relative">
+              <iframe
+                src={`${resumeUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                className="w-full h-full border-none"
+                title="Resume Preview"
+              />
+              {/* Optional: Add a loading state or overlay if needed */}
+            </div>
+
+            {/* Modal Footer (Optional: Quick actions) */}
+            <div className="px-6 py-4 border-t border-zinc-800 bg-zinc-900/50 flex items-center justify-end gap-4">
+              <p className="text-xs text-zinc-500 mr-auto font-mono uppercase tracking-widest hidden sm:block">
+                Noval Abdillah Portfolio
+              </p>
+              <button
+                onClick={() => setShowResume(false)}
+                className="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-all text-sm font-semibold"
+              >
+                Tutup
+              </button>
+              <a
+                href={resumeUrl}
+                download
+                className="px-6 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-all text-sm font-semibold shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+              >
+                Download PDF
+              </a>
+            </div>
+          </div>
+          {/* Backdrop Close Trigger */}
+          <div 
+            className="absolute inset-0 -z-10" 
+            onClick={() => setShowResume(false)} 
+          />
+        </div>
+      )}
 
       {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
