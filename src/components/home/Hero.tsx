@@ -41,6 +41,13 @@ export default function Hero() {
   const [resumeUrl] = useState('/resume/CV_Frontend_Backend (1).pdf');
   const [showResume, setShowResume] = useState(false);
 
+  // Encode URL untuk menangani spasi dan karakter khusus
+  const encodedResumeUrl = typeof window !== 'undefined' 
+    ? `${window.location.origin}${resumeUrl.replace(/\s/g, '%20')}`
+    : resumeUrl;
+
+  const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(encodedResumeUrl)}&embedded=true`;
+
   useEffect(() => {
     // Use gsap.context for proper cleanup on unmount/re-renders in React 18+
     const ctx = gsap.context(() => {
@@ -132,11 +139,10 @@ export default function Hero() {
             {/* PDF Viewer */}
             <div className="flex-1 bg-zinc-950 overflow-hidden relative">
               <iframe
-                src={`${resumeUrl}#toolbar=0&navpanes=0&scrollbar=1`}
+                src={googleViewerUrl}
                 className="w-full h-full border-none"
                 title="Resume Preview"
               />
-              {/* Optional: Add a loading state or overlay if needed */}
             </div>
 
             {/* Modal Footer (Optional: Quick actions) */}
