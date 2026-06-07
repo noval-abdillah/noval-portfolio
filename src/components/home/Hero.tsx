@@ -40,6 +40,7 @@ export default function Hero() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
   const [resumeUrl, setResumeUrl] = useState('/resume/noval-abdillah.pdf');
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
   useEffect(() => {
     // Use gsap.context for proper cleanup on unmount/re-renders in React 18+
@@ -129,16 +130,54 @@ export default function Hero() {
           >
             {t.hero.viewProjects}
           </Link>
-          <a
-            href={resumeUrl}
-            download
+          <button
+            onClick={() => setIsResumeModalOpen(true)}
             className="px-8 py-4 border border-zinc-700 hover:border-green-500 text-zinc-300 hover:text-green-500 font-semibold rounded-lg transition-all duration-300 flex items-center gap-2"
           >
             <DownloadIcon className="w-5 h-5" />
             {t.hero.downloadResume}
-          </a>
+          </button>
         </div>
       </div>
+
+      {/* Modern PDF Viewer Modal */}
+      {isResumeModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-5xl h-[90vh] flex flex-col relative overflow-hidden shadow-2xl">
+            {/* Modal Header */}
+            <div className="bg-zinc-900 border-b border-zinc-800 p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500" />
+                <div className="w-3 h-3 rounded-full bg-amber-500" />
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+                <h3 className="ml-2 text-sm font-medium text-zinc-300 font-mono">resume_noval_abdillah.pdf</h3>
+              </div>
+              <button 
+                onClick={() => setIsResumeModalOpen(false)}
+                className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* PDF Viewer Frame */}
+            <div className="flex-1 bg-zinc-800">
+              <iframe 
+                src={`${resumeUrl}#toolbar=0`} 
+                className="w-full h-full border-none"
+                title="Resume Preview"
+              />
+            </div>
+
+            {/* Footer with Info */}
+            <div className="bg-zinc-900 border-t border-zinc-800 p-3 text-center">
+              <p className="text-xs text-zinc-500 font-mono">Sistem Preview PDF Aktif - Gunakan scroll untuk melihat</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
