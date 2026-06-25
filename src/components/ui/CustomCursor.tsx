@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
 interface CustomCursorProps {
@@ -10,8 +10,22 @@ interface CustomCursorProps {
 export default function CustomCursor({ children }: CustomCursorProps) {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
+    // Hanya aktif di perangkat dengan mouse presisi (bukan touch/mobile/Android)
+    const mq = window.matchMedia('(pointer: fine)');
+    setIsDesktop(mq.matches);
+
+    // Listen untuk perubahan (misal colok mouse ke tablet)
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
+
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
@@ -46,7 +60,12 @@ export default function CustomCursor({ children }: CustomCursorProps) {
         el.removeEventListener('mouseleave', onLeave);
       });
     };
-  }, []);
+  }, [isDesktop]);
+
+  // Tidak render elemen cursor di perangkat touch/mobile — langsung render children saja
+  if (!isDesktop) {
+    return <>{children}</>;
+  }
 
   return (
     <>
