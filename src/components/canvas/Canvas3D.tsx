@@ -91,6 +91,14 @@ function AnimatedTechShape() {
   );
 }
 
+const PARTICLE_COUNT = 1500;
+const PARTICLE_POSITIONS = new Float32Array(PARTICLE_COUNT * 3);
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  PARTICLE_POSITIONS[i * 3] = (Math.random() - 0.5) * 25;
+  PARTICLE_POSITIONS[i * 3 + 1] = (Math.random() - 0.5) * 25;
+  PARTICLE_POSITIONS[i * 3 + 2] = (Math.random() - 0.5) * 25;
+}
+
 // Particle system
 function Particles() {
   const pointsRef = useRef<THREE.Points>(null);
@@ -100,20 +108,12 @@ function Particles() {
     pointsRef.current.rotation.y = clock.getElapsedTime() * 0.05;
   });
 
-  const count = 1500;
-  const positions = new Float32Array(count * 3);
-  for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 25;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 25;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 25;
-  }
-
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          args={[positions, 3]}
+          args={[PARTICLE_POSITIONS, 3]}
         />
       </bufferGeometry>
       <pointsMaterial size={0.04} color="#4ade80" transparent opacity={0.8} sizeAttenuation={true} />

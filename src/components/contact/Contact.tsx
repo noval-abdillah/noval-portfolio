@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { GitHubIcon, LinkedInIcon, EmailIcon, InstagramIcon } from '@/components/ui';
+import { GitHubIcon, LinkedInIcon, EmailIcon, InstagramIcon, CheckIcon } from '@/components/ui';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function Contact() {
@@ -10,6 +10,13 @@ export default function Contact() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSent(true);
+    setTimeout(() => setSent(false), 4000);
+  };
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -56,7 +63,7 @@ export default function Contact() {
               </a>
 
               <a
-                href="https://github.com/santetgan123-ui"
+                href="https://github.com/noval-abdillah"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-4 border border-zinc-800 rounded-lg hover:border-green-500 transition-colors group"
@@ -66,12 +73,12 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-sm text-zinc-500">GitHub</p>
-                  <p className="text-white font-medium">github.com/santetgan123-ui</p>
+                  <p className="text-white font-medium">github.com/noval-abdillah</p>
                 </div>
               </a>
 
               <a
-                href="https://linkedin.com/in/noval-abdillah"
+                href="https://www.linkedin.com/in/noval-abdillah-415589316/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-4 border border-zinc-800 rounded-lg hover:border-green-500 transition-colors group"
@@ -81,7 +88,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-sm text-zinc-500">LinkedIn</p>
-                  <p className="text-white font-medium">linkedin.com/in/noval-abdillah</p>
+                  <p className="text-white font-medium">linkedin.com/in/noval-abdillah-415589316/</p>
                 </div>
               </a>
 
@@ -104,7 +111,7 @@ export default function Contact() {
 
           <div ref={contentRef} className="bg-zinc-900 p-8 rounded-2xl border border-zinc-800 shadow-xl shadow-black/50">
             <h3 className="text-2xl font-bold text-white mb-6">{t.contact.title}</h3>
-            <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="contact-name" className="block text-sm font-medium text-zinc-300 mb-2">
                   {t.contact.nameLabel}
@@ -138,12 +145,19 @@ export default function Contact() {
                   placeholder={t.contact.messagePlaceholder}
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full px-6 py-3 bg-green-500 hover:bg-green-400 text-zinc-950 font-bold rounded-lg transition-colors"
-              >
-                {t.contact.sendMessage}
-              </button>
+              {sent ? (
+                <div className="w-full px-6 py-3 bg-green-500/20 border border-green-500/30 text-green-400 font-bold rounded-lg flex items-center justify-center gap-2">
+                  <CheckIcon className="w-5 h-5" />
+                  {t.contact.successTitle}
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full px-6 py-3 bg-green-500 hover:bg-green-400 text-zinc-950 font-bold rounded-lg transition-colors"
+                >
+                  {t.contact.sendMessage}
+                </button>
+              )}
             </form>
           </div>
         </div>

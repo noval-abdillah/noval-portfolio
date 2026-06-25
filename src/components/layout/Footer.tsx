@@ -51,7 +51,7 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4">{t.footer.connect}</h4>
             <div className="flex space-x-4">
               <a
-                href="https://github.com/santetgan123-ui"
+                href="https://github.com/noval-abdillah"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-green-500 transition-colors"
@@ -60,7 +60,7 @@ export default function Footer() {
                 <GitHubIcon className="w-6 h-6" />
               </a>
               <a
-                href="https://linkedin.com/in/noval-abdillah"
+                href="https://www.linkedin.com/in/noval-abdillah-415589316/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-green-500 transition-colors"

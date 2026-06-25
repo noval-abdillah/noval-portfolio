@@ -7,6 +7,7 @@ export const translations = {
       about: 'About',
       projects: 'Projects',
       contact: 'Contact',
+      blog: 'Blog',
     },
     hero: {
       role: 'FRONTEND & BACKEND DEVELOPER',
@@ -24,6 +25,7 @@ export const translations = {
       certifications: 'Certifications',
       aiAssisted: 'AI-Assisted Development',
       problemSolving: 'Problem Solving Intermediate',
+      googleAi: 'Google AI Professional Certificate',
       profileBadge: 'Frontend & Backend Dev',
       officeTools: 'Office Tools Proficiency',
       previewCert: 'Preview',
@@ -50,6 +52,36 @@ export const translations = {
       errorTitle: 'Error!',
       errorDesc: 'Something went wrong. Please try again later.',
     },
+    blog: {
+      title: 'Latest Insights',
+      subtitle: 'Sharing my thoughts on AI-assisted engineering, modern fullstack development, and interactive UI/UX design.',
+      readMore: 'Read Article',
+      categories: {
+        ai: 'AI & Coding',
+        fullstack: 'Fullstack',
+        creative: 'Creative Dev',
+      },
+      posts: [
+        {
+          title: 'How I Use AI Agents to Build 10x Faster',
+          excerpt: 'Discover how AI prompting and collaborative coding can accelerate Next.js and Supabase development without losing architectural quality.',
+          date: 'Jun 25, 2026',
+          time: '5 min read',
+        },
+        {
+          title: 'Mastering Next.js 16 and Supabase Authentication',
+          excerpt: 'A complete guide to building secure JWT and RBAC authentication flows using Supabase SSR in Next.js App Router.',
+          date: 'Jun 18, 2026',
+          time: '8 min read',
+        },
+        {
+          title: 'Creating Premium Web Animations with GSAP and Lenis',
+          excerpt: 'Tips and tricks for syncing smooth scrolling animations and scroll-triggered transitions for a state-of-the-art user experience.',
+          date: 'Jun 10, 2026',
+          time: '6 min read',
+        },
+      ],
+    },
     footer: {
       description: 'Full Stack Developer focused on building high-quality, production-grade applications with modern technologies.',
       quickLinks: 'Quick Links',
@@ -63,6 +95,7 @@ export const translations = {
       about: 'Tentang',
       projects: 'Proyek',
       contact: 'Kontak',
+      blog: 'Blog',
     },
     hero: {
       role: 'FRONTEND & BACKEND DEVELOPER', // Usually kept in English for professional titles
@@ -80,6 +113,7 @@ export const translations = {
       certifications: 'Sertifikasi',
       aiAssisted: 'Pengembangan dengan Bantuan AI',
       problemSolving: 'Pemecahan Masalah Menengah',
+      googleAi: 'Sertifikasi Profesional Google AI',
       profileBadge: 'Frontend & Backend Dev',
       officeTools: 'Penguasaan Microsoft Office',
       previewCert: 'Pratinjau',
@@ -105,6 +139,36 @@ export const translations = {
       successDesc: 'Terima kasih telah menghubungi. Saya akan segera membalas pesan Anda.',
       errorTitle: 'Terjadi Kesalahan!',
       errorDesc: 'Ada yang salah. Silakan coba lagi nanti.',
+    },
+    blog: {
+      title: 'Artikel Terbaru',
+      subtitle: 'Berbagi wawasan seputar rekayasa teknologi berbantuan AI, pengembangan full-stack modern, dan animasi UI.',
+      readMore: 'Baca Artikel',
+      categories: {
+        ai: 'AI & Koding',
+        fullstack: 'Fullstack',
+        creative: 'Creative Dev',
+      },
+      posts: [
+        {
+          title: 'Cara Saya Menggunakan AI Agent untuk Membangun Aplikasi 10x Lebih Cepat',
+          excerpt: 'Pelajari bagaimana rekayasa prompt dan pemrograman kolaboratif AI mempercepat pembuatan Next.js & Supabase tanpa merusak kualitas kode.',
+          date: '25 Jun 2026',
+          time: '5 mnt baca',
+        },
+        {
+          title: 'Menguasai Autentikasi Next.js 16 dan Supabase',
+          excerpt: 'Panduan lengkap membangun alur autentikasi JWT dan RBAC yang aman menggunakan Supabase SSR di Next.js App Router.',
+          date: '18 Jun 2026',
+          time: '8 mnt baca',
+        },
+        {
+          title: 'Membuat Animasi Web Premium dengan GSAP dan Lenis',
+          excerpt: 'Tips dan trik mensinkronisasi animasi smooth scroll dan transisi scroll-trigger untuk pengalaman pengguna premium.',
+          date: '10 Jun 2026',
+          time: '6 mnt baca',
+        },
+      ],
     },
     footer: {
       description: 'Full Stack Developer yang fokus membangun aplikasi berkualitas tinggi dan berstandar produksi dengan teknologi modern.',

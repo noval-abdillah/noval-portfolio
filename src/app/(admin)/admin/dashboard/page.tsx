@@ -12,7 +12,8 @@ import {
   ExternalLinkIcon,
   GitHubIcon,
   WarningIcon,
-  InfoIcon
+  InfoIcon,
+  CloseIcon
 } from '@/components/ui';
 import { SVGSpinner } from '@/components/ui';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,7 @@ export default function AdminDashboard() {
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [showResumeModal, setShowResumeModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<'projects' | 'resume'>('projects');
   const [formLoading, setFormLoading] = useState(false);
   
   // Status and feedback messaging states
@@ -55,7 +56,7 @@ export default function AdminDashboard() {
     loadCurrentResumeUrl();
   }, []);
 
-  const fetchProjects = async () => {
+  async function fetchProjects() {
     setLoading(true);
     setDashboardError(null);
     try {
@@ -76,7 +77,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const handleImageUpload = async (file: File): Promise<string> => {
     const supabase = createClient();
@@ -107,14 +108,26 @@ export default function AdminDashboard() {
   };
 
   const handleResumeUpload = async (file: File): Promise<string> => {
-    // Fitur ini dinonaktifkan sementara. Gunakan penggantian file manual di folder public/resume/
-    throw new Error('Fitur upload dinonaktifkan. Silakan ganti file secara manual di folder public/resume/ dan push ke GitHub.');
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const res = await fetch(`/api/resume/upload?filename=${encodeURIComponent(file.name)}`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error || 'Gagal mengunggah resume.');
+    }
+
+    const blob = await res.json();
+    return blob.url;
   };
 
-  const loadCurrentResumeUrl = async () => {
-    // Selalu gunakan file lokal statis, dan encode path agar aman untuk preview/download.
-    setCurrentResumeUrl(encodeURI('/resume/CV_Frontend_Backend (1).pdf'));
-  };
+  async function loadCurrentResumeUrl() {
+    setCurrentResumeUrl('/resume/CV_Noval_AbdillahEN.pdf');
+  }
   const triggerRevalidation = async () => {
     try {
       const res = await fetch('/api/revalidate', {
@@ -267,61 +280,42 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans">
+      {/* Visual neon glow decorations */}
+      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-green-500/5 blur-[150px] rounded-full pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
         
         {/* Dashboard Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12 border-b border-zinc-800 pb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10 border-b border-zinc-900 pb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Admin Dashboard</h1>
-            <p className="text-sm text-zinc-400 mt-1">Kelola proyek portofolio Anda secara real-time.</p>
+            <h1 className="text-3xl font-bold text-white tracking-tight font-mono">
+              ADMIN<span className="text-green-500">.</span>PANEL
+            </h1>
+            <p className="text-sm text-zinc-400 mt-1 font-mono">/ Manage your portfolio projects and resume real-time</p>
           </div>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => setShowResumeModal(true)}
-              className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold rounded-lg transition-colors text-sm"
-            >
-              Kelola Resume
-            </button>
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors flex items-center gap-2 text-sm"
-            >
-              <PlusIcon className="w-4 h-4" />
-              <span>Tambah Proyek</span>
-            </button>
+          <div className="flex items-center gap-3">
+            {activeTab === 'projects' && (
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="px-5 py-2.5 bg-green-600 hover:bg-green-500 text-zinc-950 font-bold rounded-lg transition-all duration-300 flex items-center gap-2 text-sm shadow-[0_0_20px_rgba(34,197,94,0.15)] cursor-pointer"
+              >
+                <PlusIcon className="w-4 h-4 stroke-[3]" />
+                <span>{showForm ? 'Tutup Form' : 'Tambah Proyek'}</span>
+              </button>
+            )}
             <button
               onClick={handleLogout}
-              className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-lg transition-colors text-sm"
+              className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-semibold rounded-lg transition-all duration-300 text-sm cursor-pointer"
             >
               Keluar
             </button>
           </div>
         </div>
 
-        <div className="mb-10 rounded-3xl border border-emerald-600/20 bg-emerald-950/10 p-6 text-zinc-100">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div>
-              <h2 className="text-lg font-semibold text-white">Upload Resume PDF</h2>
-              <p className="text-sm text-zinc-400 mt-1">
-                Untuk mengunggah file resume baru, klik tombol <span className="font-semibold text-emerald-300">Kelola Resume</span> di samping.
-                Ketika berhasil, kamu akan menemukan tombol <span className="font-semibold text-emerald-300">Unggah Resume PDF</span> di panel berikutnya.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowResumeModal(true)}
-              className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-colors text-sm"
-            >
-              Buka Panel Resume
-            </button>
-          </div>
-        </div>
-
         {/* Global Dashboard Feedback Notification */}
         {dashboardError && (
-          <div className="mb-8 p-4 bg-red-950/40 border border-red-800/60 rounded-xl flex items-start gap-3 text-red-400">
+          <div className="mb-8 p-4 bg-red-950/20 border border-red-800/40 rounded-xl flex items-start gap-3 text-red-400 animate-in fade-in slide-in-from-top-2 duration-300">
             <WarningIcon className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <div>
               <h4 className="font-semibold text-red-200 text-sm">Kesalahan Sistem</h4>
@@ -331,106 +325,332 @@ export default function AdminDashboard() {
         )}
 
         {dashboardSuccess && (
-          <div className="mb-8 p-4 bg-green-950/40 border border-green-800/60 rounded-xl flex items-start gap-3 text-green-400">
+          <div className="mb-8 p-4 bg-green-950/20 border border-green-800/40 rounded-xl flex items-start gap-3 text-green-400 animate-in fade-in slide-in-from-top-2 duration-300">
             <CheckIcon className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-semibold text-green-200 text-sm">Transaksi Berhasil</h4>
+              <h4 className="font-semibold text-green-200 text-sm">Berhasil</h4>
               <p className="text-xs text-green-400/90 mt-1">{dashboardSuccess}</p>
             </div>
           </div>
         )}
 
-        {/* Resume Upload Modal */}
-        {showResumeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 p-6 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-white">Kelola Resume</h2>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowResumeModal(false);
-                    setResumeError(null);
-                    setResumeSuccess(null);
-                  }}
-                  className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
-                >
-                  <svg className="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-white">Upload Resume Baru</h2>
-              <p className="text-sm text-zinc-400 mt-1">
-                Unggah file PDF baru untuk resume. File lama akan otomatis tergantikan.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              {currentResumeUrl ? (
-                <div className="flex gap-2">
-                  <a
-                    href={currentResumeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 transition-colors text-sm font-semibold"
-                  >
-                    <ExternalLinkIcon className="w-4 h-4" />
-                    Buka Preview
-                  </a>
+        {/* Navigation Tabs */}
+        <div className="flex border-b border-zinc-900 mb-8 gap-6">
+          <button
+            onClick={() => setActiveTab('projects')}
+            className={`pb-4 text-sm md:text-base font-semibold font-mono tracking-wider transition-all border-b-2 px-1 cursor-pointer ${
+              activeTab === 'projects' 
+                ? 'border-green-500 text-green-500' 
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            PROYEK ({projects.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('resume')}
+            className={`pb-4 text-sm md:text-base font-semibold font-mono tracking-wider transition-all border-b-2 px-1 cursor-pointer ${
+              activeTab === 'resume' 
+                ? 'border-green-500 text-green-500' 
+                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            RESUME & CV
+          </button>
+        </div>
+
+        {/* PROJECTS TAB CONTENT */}
+        {activeTab === 'projects' && (
+          <div className="space-y-8">
+            {/* Inline Project Add Form */}
+            {showForm && (
+              <div className="bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/80 rounded-2xl p-6 md:p-8 shadow-xl animate-in slide-in-from-top-4 duration-300">
+                <div className="flex items-center justify-between mb-6 pb-4 border-b border-zinc-850">
+                  <h2 className="text-xl font-bold text-white font-mono">Tambah Proyek Baru</h2>
                   <button
+                    type="button"
                     onClick={() => {
-                      // Hapus query string (?t=...) agar link bersih
-                      const cleanUrl = currentResumeUrl.split('?')[0];
-                      navigator.clipboard.writeText(cleanUrl);
-                      alert('Link PDF berhasil disalin!');
+                      setShowForm(false);
+                      setFormError(null);
+                      setFormSuccess(null);
                     }}
-                    className="px-4 py-2 bg-zinc-800 text-zinc-300 rounded-lg hover:bg-zinc-700 text-sm"
+                    className="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white transition-colors cursor-pointer"
                   >
-                    Salin Link
+                    <CloseIcon className="w-5 h-5" />
                   </button>
                 </div>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {formError && (
+                    <div className="p-4 bg-red-950/20 border border-red-800/40 rounded-xl flex items-start gap-3 text-red-400">
+                      <WarningIcon className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-red-200 text-sm">Kesalahan Input</h4>
+                        <p className="text-xs text-red-400/90 mt-1">{formError}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {formSuccess && (
+                    <div className="p-4 bg-green-950/20 border border-green-800/40 rounded-xl flex items-start gap-3 text-green-400">
+                      <CheckIcon className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-green-200 text-sm">Berhasil</h4>
+                        <p className="text-xs text-green-400/90 mt-1">{formSuccess}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Judul Proyek</label>
+                      <input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        required
+                        placeholder="Nama platform atau aplikasi"
+                        className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                        Tech Stack (pisahkan dengan koma)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.tech_stack}
+                        onChange={(e) => setFormData({ ...formData, tech_stack: e.target.value })}
+                        required
+                        placeholder="Next.js, Tailwind CSS, PostgreSQL"
+                        className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Deskripsi Ringkas</label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      required
+                      rows={4}
+                      placeholder="Jelaskan fitur utama, peran Anda, dan hasil pencapaian teknis proyek ini secara mendalam."
+                      className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm resize-none"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                      Thumbnail Proyek
+                    </label>
+                    <div className="flex items-center gap-4 p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
+                        required
+                        className="block w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700 transition-colors cursor-pointer"
+                      />
+                      {(uploading || formLoading) && <SVGSpinner size={24} />}
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Tautan Live Demo</label>
+                      <input
+                        type="url"
+                        value={formData.live_url}
+                        onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
+                        placeholder="https://example.com"
+                        className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Tautan Repository GitHub</label>
+                      <input
+                        type="url"
+                        value={formData.github_url}
+                        onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+                        placeholder="https://github.com/noval-abdillah/repo"
+                        className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-4">
+                    <button
+                      type="submit"
+                      disabled={formLoading || uploading}
+                      className="flex-1 md:flex-initial px-8 py-3 bg-green-600 hover:bg-green-500 disabled:bg-green-600/40 text-zinc-950 font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm cursor-pointer font-mono"
+                    >
+                      {(formLoading || uploading) && <SVGSpinner size={16} />}
+                      <span>SIMPAN PROYEK</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowForm(false);
+                        setFormError(null);
+                        setFormSuccess(null);
+                      }}
+                      className="px-6 py-3 bg-zinc-850 hover:bg-zinc-800 text-zinc-300 rounded-lg transition-colors text-sm cursor-pointer"
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Existing Projects Grid */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-white font-mono flex items-center gap-2">
+                <span>Daftar Proyek Saat Ini</span>
+                <span className="text-xs bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded-full font-mono">{projects.length}</span>
+              </h2>
+              
+              {projects.length === 0 ? (
+                <div className="text-center py-20 bg-zinc-900/20 border border-zinc-800/80 rounded-2xl">
+                  <InfoIcon className="w-10 h-10 text-zinc-600 mx-auto mb-4" />
+                  <p className="text-zinc-500 text-sm">Belum ada proyek yang terdaftar. Mulai tambahkan proyek pertama Anda.</p>
+                </div>
               ) : (
-                <span className="px-4 py-2 bg-zinc-800 text-zinc-400 rounded-lg text-sm">Resume belum tersedia</span>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {projects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="bg-zinc-900/40 backdrop-blur-sm rounded-xl overflow-hidden border border-zinc-800/80 hover:border-zinc-700 transition-all duration-300 flex flex-col group hover:shadow-[0_0_20px_rgba(34,197,94,0.02)]"
+                    >
+                      <div className="aspect-video w-full relative bg-zinc-950 border-b border-zinc-800/80 overflow-hidden">
+                        {project.image_url ? (
+                          <Image
+                            src={project.image_url}
+                            alt={project.title}
+                            fill
+                            priority
+                            className="object-cover transition-transform duration-500 group-hover:scale-103"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <WarningIcon className="w-8 h-8 text-zinc-700" />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col">
+                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-green-500 transition-colors">{project.title}</h3>
+                        <p className="text-zinc-400 text-xs mb-4 line-clamp-3 leading-relaxed flex-1">{project.description}</p>
+                        
+                        <div className="flex flex-wrap gap-1.5 mb-5">
+                          {project.tech_stack?.map((tech) => (
+                            <span key={tech} className="px-2 py-0.5 bg-zinc-950 text-zinc-400 text-[10px] rounded border border-zinc-800/60 font-mono uppercase tracking-wider">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center gap-2 border-t border-zinc-800/60 pt-4 mt-auto">
+                          {project.live_url && (
+                            <a
+                              href={project.live_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-850 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 rounded transition-colors text-xs"
+                            >
+                              <ExternalLinkIcon className="w-3.5 h-3.5" />
+                              <span>Live</span>
+                            </a>
+                          )}
+                          
+                          {project.github_url && (
+                            <a
+                              href={project.github_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-850 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 rounded transition-colors text-xs"
+                            >
+                              <GitHubIcon className="w-3.5 h-3.5" />
+                              <span>Code</span>
+                            </a>
+                          )}
+
+                          <button
+                            onClick={() => {
+                              if (confirm(`Apakah Anda yakin ingin menghapus proyek "${project.title}"?`)) {
+                                handleDelete(project.id, project.image_url);
+                              }
+                            }}
+                            disabled={deleting === project.id}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-950/20 hover:bg-red-950/40 text-red-400 border border-red-900/40 rounded transition-colors text-xs ml-auto disabled:opacity-50 cursor-pointer"
+                          >
+                            {deleting === project.id ? (
+                              <SVGSpinner size={14} />
+                            ) : (
+                              <TrashIcon className="w-3.5 h-3.5" />
+                            )}
+                            <span>Hapus</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>
+        )}
 
-          <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
-            <div className="space-y-4">
-              {resumeError && (
-                <div className="p-4 bg-red-950/40 border border-red-800/60 rounded-lg flex items-start gap-3 text-red-400">
-                  <WarningIcon className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-red-200 text-sm">Kesalahan Upload</h4>
-                    <p className="text-xs text-red-400/90 mt-1">{resumeError}</p>
+        {/* RESUME TAB CONTENT */}
+        {activeTab === 'resume' && (
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr] animate-in fade-in slide-in-from-bottom-4 duration-300">
+            {/* Upload form card */}
+            <div className="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-2xl p-6 md:p-8 flex flex-col justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-white font-mono mb-2">Upload Resume Baru</h2>
+                <p className="text-sm text-zinc-400 mb-6">
+                  Unggah file PDF baru untuk resume portofolio Anda. File lama akan langsung ditimpa dan diperbarui secara global.
+                </p>
+
+                {resumeError && (
+                  <div className="p-4 bg-red-950/20 border border-red-800/40 rounded-xl flex items-start gap-3 text-red-400 mb-6">
+                    <WarningIcon className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-red-200 text-sm">Kesalahan Upload</h4>
+                      <p className="text-xs text-red-400/90 mt-1">{resumeError}</p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {resumeSuccess && (
-                <div className="p-4 bg-green-950/40 border border-green-800/60 rounded-lg flex items-start gap-3 text-green-400">
-                  <CheckIcon className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-green-200 text-sm">Resume Terunggah</h4>
-                    <p className="text-xs text-green-400/90 mt-1">{resumeSuccess}</p>
+                {resumeSuccess && (
+                  <div className="p-4 bg-green-950/20 border border-green-800/40 rounded-xl flex items-start gap-3 text-green-400 mb-6">
+                    <CheckIcon className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-green-200 text-sm">Berhasil</h4>
+                      <p className="text-xs text-green-400/90 mt-1">{resumeSuccess}</p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Pilih PDF Resume</label>
-                <input
-                  type="file"
-                  accept="application/pdf"
-                  onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-                  className="block w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-500 transition-colors"
-                />
+                <div className="p-6 bg-zinc-950 border border-zinc-800 rounded-xl border-dashed hover:border-green-500/50 transition-colors mb-6 group flex flex-col items-center justify-center text-center">
+                  <UploadIcon className="w-10 h-10 text-zinc-600 mb-3 group-hover:text-green-500 transition-colors" />
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">Pilih PDF Resume</label>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                    className="block w-full max-w-xs text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700 transition-colors cursor-pointer"
+                  />
+                  {resumeFile && (
+                    <p className="text-xs text-green-400 font-mono mt-3">Terpilih: {resumeFile.name} ({(resumeFile.size / 1024).toFixed(1)} KB)</p>
+                  )}
+                </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-zinc-850">
                 <button
                   type="button"
                   onClick={async () => {
@@ -454,278 +674,68 @@ export default function AdminDashboard() {
                     }
                   }}
                   disabled={resumeUploading}
-                  className="px-6 py-3 bg-green-600 hover:bg-green-500 disabled:bg-green-600/40 text-white font-semibold rounded-lg transition-colors text-sm"
+                  className="w-full sm:w-auto px-6 py-3 bg-green-600 hover:bg-green-500 disabled:bg-green-600/40 text-zinc-950 font-bold rounded-lg transition-colors text-sm flex items-center justify-center gap-2 cursor-pointer font-mono"
                 >
-                  {resumeUploading ? 'Mengunggah...' : 'Unggah Resume PDF'}
+                  {resumeUploading && <SVGSpinner size={16} />}
+                  <span>{resumeUploading ? 'MENGUNGGAH...' : 'UNGGAH RESUME PDF'}</span>
                 </button>
-                <p className="text-xs text-zinc-500">File akan diunggah ke bucket Supabase <strong>resume</strong> dengan nama <code>resume.pdf</code>.</p>
+                <p className="text-xs text-zinc-500 font-mono">File akan terunggah secara statis sebagai resume aktif portofolio.</p>
               </div>
             </div>
 
-            <div className="p-6 bg-zinc-950 border border-zinc-800 rounded-3xl">
-              <h3 className="text-base font-semibold text-white mb-3">Status Resume Saat Ini</h3>
-              <p className="text-sm text-zinc-400 mb-4">
-                Di sini Anda bisa melihat apakah resume sudah tersedia dan langsung mengunduhnya.
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between rounded-lg bg-zinc-900/70 p-4">
-                  <span className="text-sm text-zinc-300">Status</span>
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${currentResumeUrl ? 'bg-emerald-600/15 text-emerald-300' : 'bg-red-600/10 text-red-300'}`}>
-                    {currentResumeUrl ? 'Aktif' : 'Tidak tersedia'}
-                  </span>
-                </div>
-                <div className="rounded-lg bg-zinc-900/70 p-4 text-sm text-zinc-400">
-                  <p className="font-medium text-white mb-2">Link Unduhan:</p>
-                  <p className="truncate">{currentResumeUrl ?? 'Belum ada resume terunggah.'}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-              </div>
-            </div>
-          </div>
-        )}
+            {/* Status Panel card */}
+            <div className="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/80 rounded-2xl p-6 md:p-8 flex flex-col justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-white font-mono mb-2">Status Resume Saat Ini</h2>
+                <p className="text-sm text-zinc-400 mb-6">
+                  Periksa ketersediaan tautan dan kelola pembagian resume portofolio Anda.
+                </p>
 
-        {/* Add Project Form Modal */}
-        {showForm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 p-6 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-white">Tambah Proyek Baru</h2>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForm(false);
-                    setFormError(null);
-                    setFormSuccess(null);
-                  }}
-                  className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
-                >
-                  <svg className="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="p-6">
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              
-              {formError && (
-                <div className="p-4 bg-red-950/40 border border-red-800/60 rounded-lg flex items-start gap-3 text-red-400">
-                  <WarningIcon className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-red-200 text-sm">Input Tidak Valid</h4>
-                    <p className="text-xs text-red-400/90 mt-1">{formError}</p>
-                  </div>
-                </div>
-              )}
-
-              {formSuccess && (
-                <div className="p-4 bg-green-950/40 border border-green-800/60 rounded-lg flex items-start gap-3 text-green-400">
-                  <CheckIcon className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-green-200 text-sm">Berhasil disimpan</h4>
-                    <p className="text-xs text-green-400/90 mt-1">{formSuccess}</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Judul Proyek</label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    required
-                    placeholder="Nama platform atau aplikasi"
-                    className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                    Tech Stack (pisahkan dengan koma)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.tech_stack}
-                    onChange={(e) => setFormData({ ...formData, tech_stack: e.target.value })}
-                    required
-                    placeholder="Next.js, Tailwind CSS, PostgreSQL"
-                    className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Deskripsi Ringkas</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  required
-                  rows={4}
-                  placeholder="Jelaskan fitur utama, peran Anda, dan hasil pencapaian teknis proyek ini."
-                  className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                  Thumbnail Proyek
-                </label>
-                <div className="flex items-center gap-4 p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
-                    required
-                    className="block w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-500 transition-colors"
-                  />
-                  {(uploading || formLoading) && <SVGSpinner size={24} />}
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Tautan Live Demo</label>
-                  <input
-                    type="url"
-                    value={formData.live_url}
-                    onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
-                    placeholder="https://example.com"
-                    className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">Tautan Repository GitHub</label>
-                  <input
-                    type="url"
-                    value={formData.github_url}
-                    onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
-                    placeholder="https://github.com/santetgan123-ui/repo"
-                    className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors text-sm"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 pt-6 border-t border-zinc-800">
-                <button
-                  type="submit"
-                  disabled={formLoading || uploading}
-                  className="flex-1 px-8 py-4 bg-green-600 hover:bg-green-500 disabled:bg-green-600/40 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-3 text-base"
-                >
-                  {(formLoading || uploading) && <SVGSpinner size={20} />}
-                  <span>Simpan Proyek</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForm(false);
-                    setFormError(null);
-                    setFormSuccess(null);
-                  }}
-                  className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-lg transition-colors text-base"
-                >
-                  Batal
-                </button>
-              </div>
-            </form>
-            </div>
-          </div>
-        </div>
-        )}
-
-        {/* Existing Projects Grid */}
-        <h2 className="text-xl font-bold text-white mb-6">Daftar Proyek Saat Ini ({projects.length})</h2>
-        
-        {projects.length === 0 ? (
-          <div className="text-center py-20 bg-zinc-900/40 border border-zinc-800 rounded-2xl">
-            <InfoIcon className="w-10 h-10 text-zinc-600 mx-auto mb-4" />
-            <p className="text-zinc-500 text-sm">Belum ada proyek yang terdaftar. Mulai tambahkan proyek pertama Anda.</p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                className="bg-zinc-900/70 rounded-xl overflow-hidden border border-zinc-800 flex flex-col hover:border-zinc-700 transition-colors"
-              >
-                <div className="aspect-video w-full relative bg-zinc-950">
-                  {project.image_url ? (
-                    <Image
-                      src={project.image_url}
-                      alt={project.title}
-                      fill
-                      priority
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <WarningIcon className="w-8 h-8 text-zinc-700" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-6 flex-1 flex flex-col">
-                  <h3 className="text-lg font-bold text-white mb-2">{project.title}</h3>
-                  <p className="text-zinc-400 text-xs mb-4 line-clamp-3 leading-relaxed flex-1">{project.description}</p>
-                  
-                  <div className="flex flex-wrap gap-1.5 mb-5">
-                    {project.tech_stack?.map((tech) => (
-                      <span key={tech} className="px-2 py-0.5 bg-zinc-950 text-zinc-400 text-[10px] rounded font-mono uppercase tracking-wider">
-                        {tech}
-                      </span>
-                    ))}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between rounded-xl bg-zinc-950 border border-zinc-850 p-4">
+                    <span className="text-sm text-zinc-400 font-mono">Status Aktif</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-mono font-semibold ${currentResumeUrl ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'} border`}>
+                      {currentResumeUrl ? 'AKTIF' : 'TIDAK TERSEDIA'}
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-2 border-t border-zinc-800/80 pt-4 mt-auto">
-                    {project.live_url && (
-                      <a
-                        href={project.live_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-zinc-300 rounded transition-colors text-xs"
-                      >
-                        <ExternalLinkIcon className="w-3.5 h-3.5" />
-                        <span>Live</span>
-                      </a>
-                    )}
+                  <div className="rounded-xl bg-zinc-950 border border-zinc-850 p-5 text-sm text-zinc-400">
+                    <p className="font-semibold text-white font-mono mb-2">Link Unduhan:</p>
+                    <p className="truncate bg-zinc-900 px-3 py-2 rounded border border-zinc-850 text-xs font-mono text-zinc-300 mb-4 select-all">
+                      {currentResumeUrl ?? 'Belum ada resume terunggah.'}
+                    </p>
                     
-                    {project.github_url && (
-                      <a
-                        href={project.github_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-zinc-300 rounded transition-colors text-xs"
-                      >
-                        <GitHubIcon className="w-3.5 h-3.5" />
-                        <span>Code</span>
-                      </a>
+                    {currentResumeUrl && (
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={currentResumeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-zinc-950 font-bold rounded-lg transition-colors text-xs cursor-pointer font-mono"
+                        >
+                          <ExternalLinkIcon className="w-3.5 h-3.5" />
+                          <span>PREVIEW PDF</span>
+                        </a>
+                        <button
+                          onClick={() => {
+                            const cleanUrl = currentResumeUrl.split('?')[0];
+                            navigator.clipboard.writeText(cleanUrl);
+                            alert('Link PDF berhasil disalin!');
+                          }}
+                          className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg text-xs font-mono transition-colors border border-zinc-700 cursor-pointer"
+                        >
+                          Salin Link
+                        </button>
+                      </div>
                     )}
-
-                    <button
-                      onClick={() => {
-                        if (confirm(`Apakah Anda yakin ingin menghapus proyek "${project.title}"?`)) {
-                          handleDelete(project.id, project.image_url);
-                        }
-                      }}
-                      disabled={deleting === project.id}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-red-950/20 hover:bg-red-950/40 text-red-400 border border-red-900/40 rounded transition-colors text-xs ml-auto disabled:opacity-50"
-                    >
-                      {deleting === project.id ? (
-                        <SVGSpinner size={14} />
-                      ) : (
-                        <TrashIcon className="w-3.5 h-3.5" />
-                      )}
-                      <span>Hapus</span>
-                    </button>
                   </div>
                 </div>
               </div>
-            ))}
+
+              <div className="text-xs text-zinc-500 border-t border-zinc-850 pt-4 mt-6">
+                💡 <em>Tips: Selalu lakukan uji pratinjau (Preview PDF) setelah mengunggah resume untuk memastikan berkas terbaca secara utuh di peramban.</em>
+              </div>
+            </div>
           </div>
         )}
 

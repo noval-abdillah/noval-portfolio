@@ -21,7 +21,7 @@ export default function ProjectsClient({ projects, limit }: { projects: Project[
 
         {displayProjects.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-zinc-500 font-mono">// No projects yet — add some via the admin dashboard</p>
+            <p className="text-zinc-500 font-mono">{"// No projects yet — add some via the admin dashboard"}</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

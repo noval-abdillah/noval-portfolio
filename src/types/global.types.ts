@@ -1,3 +1,5 @@
+import Lenis from 'lenis';
+
 export interface Project {
   id: string;
   title: string;

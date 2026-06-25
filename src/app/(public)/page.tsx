@@ -1,5 +1,6 @@
 import { Hero } from '@/components/home';
 import { Projects } from '@/components/projects';
+import BlogSection from '@/components/blog/BlogSection';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -17,6 +18,7 @@ export default function HomePage() {
           </Link>
         </div>
       </div>
+      <BlogSection />
     </div>
   );
 }

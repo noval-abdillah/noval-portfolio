@@ -28,6 +28,7 @@ export default function Navbar() {
     { name: t.nav.home, href: '/' },
     { name: t.nav.about, href: '/about' },
     { name: t.nav.projects, href: '/projects' },
+    { name: t.nav.blog, href: '/blog' },
     { name: t.nav.contact, href: '/contact' },
   ];
 
@@ -94,7 +95,7 @@ export default function Navbar() {
             {/* Social & Language Links */}
             <div className="flex items-center space-x-4 ml-8">
               <a
-                href="https://github.com/santetgan123-ui"
+                href="https://github.com/noval-abdillah"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-green-500 transition-colors"
@@ -103,7 +104,7 @@ export default function Navbar() {
                 <GitHubIcon className="w-5 h-5" />
               </a>
               <a
-                href="https://linkedin.com/in/noval-abdillah"
+                href="https://www.linkedin.com/in/noval-abdillah-415589316/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-zinc-400 hover:text-green-500 transition-colors"
@@ -170,7 +171,7 @@ export default function Navbar() {
             
             <div className="pt-4 border-t border-zinc-800 space-y-4">
               <a
-                href="https://github.com/santetgan123-ui"
+                href="https://github.com/noval-abdillah"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-zinc-400 hover:text-green-500 transition-colors"
@@ -179,7 +180,7 @@ export default function Navbar() {
                 <span>GitHub</span>
               </a>
               <a
-                href="https://linkedin.com/in/noval-abdillah"
+                href="https://www.linkedin.com/in/noval-abdillah-415589316/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-zinc-400 hover:text-green-500 transition-colors"

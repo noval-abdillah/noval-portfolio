@@ -3,8 +3,7 @@ import { Inter, Roboto_Mono } from 'next/font/google';
 import '@/app/globals.css';
 import { Navbar } from '@/components/layout';
 import { Footer } from '@/components/layout';
-import { SmoothScroll } from '@/components/ui';
-import { PageTransition } from '@/components/ui';
+import { SmoothScroll, PageTransition, CustomCursor } from '@/components/ui';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -19,7 +18,7 @@ const mono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Noval Abdillah | Full Stack SaaS Developer & AI-Assisted Engineer',
+  title: 'Noval Abdillah | Fullstack Developer & Ai Coder',
   description: 'Portfolio of Noval Abdillah, a Full Stack Developer specializing in building production-grade SaaS applications with Next.js, Node.js, and PostgreSQL. Expert in AI-assisted development using GitHub Copilot.',
   keywords: [
     'Full Stack Developer',
@@ -53,7 +52,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://novalabdillah.com',
-    title: 'Noval Abdillah | Full Stack SaaS Developer & AI-Assisted Engineer',
+    title: 'Noval Abdillah | Fullstack Developer & Ai Coder',
     description: 'Building production-grade SaaS applications with modern technologies',
     siteName: 'Noval Abdillah Portfolio',
     images: [
@@ -67,7 +66,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Noval Abdillah | Full Stack SaaS Developer',
+    title: 'Noval Abdillah | Fullstack Developer & Ai Coder',
     description: 'Building production-grade SaaS applications with modern technologies',
     creator: '@novalabdillah',
   },
@@ -90,6 +89,7 @@ export default function RootLayout({
         className={`${inter.variable} ${mono.variable} font-sans bg-zinc-950 text-zinc-100`}
       >
         <LanguageProvider>
+        <CustomCursor>
           <SmoothScroll>
             <PageTransition>
               <Navbar />
@@ -99,6 +99,7 @@ export default function RootLayout({
               <Footer />
             </PageTransition>
           </SmoothScroll>
+        </CustomCursor>
         </LanguageProvider>
       </body>
     </html>

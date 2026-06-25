@@ -40,8 +40,17 @@ export default function Hero() {
   const { t } = useLanguage();
   const [showResume, setShowResume] = useState(false);
   
-  // Use an encoded public URL so the PDF loads reliably in the modal iframe and download link.
-  const resumeUrl = encodeURI('/resume/CV_Frontend_Backend (1).pdf');
+  const resumeUrl = '/resume/CV_Noval_AbdillahEN.pdf';
+
+  // Close modal on Escape key press
+  useEffect(() => {
+    if (!showResume) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowResume(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showResume]);
 
   useEffect(() => {
     // Use gsap.context for proper cleanup on unmount/re-renders in React 18+

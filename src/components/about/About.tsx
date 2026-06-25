@@ -16,6 +16,16 @@ export default function About() {
   const { t } = useLanguage();
   const [selectedCert, setSelectedCert] = useState<{title: string; img: string} | null>(null);
 
+  // Close certificate modal on Escape key press
+  useEffect(() => {
+    if (!selectedCert) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedCert(null);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [selectedCert]);
+
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -88,6 +98,23 @@ export default function About() {
             <div className="p-6 border border-zinc-800 rounded-lg bg-zinc-900/50">
               <h4 className="text-lg font-semibold text-white mb-4">{t.about.certifications}</h4>
               <ul className="space-y-4">
+                <li className="flex items-start justify-between gap-3">
+                  <div className="flex gap-3 items-start">
+                    <div className="mt-1 text-green-500">
+                      <CheckIcon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="block text-white font-medium">{t.about.googleAi}</span>
+                      <span className="text-zinc-400 text-sm">Google (via Coursera)</span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setSelectedCert({ title: t.about.googleAi, img: '/cert-google-ai.png' })}
+                    className="px-3 py-1 text-xs font-medium bg-zinc-800 hover:bg-zinc-700 text-white rounded-md transition-colors whitespace-nowrap"
+                  >
+                    {t.about.previewCert}
+                  </button>
+                </li>
                 <li className="flex items-start justify-between gap-3">
                   <div className="flex gap-3 items-start">
                     <div className="mt-1 text-green-500">
