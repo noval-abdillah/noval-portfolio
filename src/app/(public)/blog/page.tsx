@@ -36,14 +36,14 @@ export default function BlogListingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 py-24 relative">
+    <div className="min-h-screen bg-zinc-950 py-24 relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-green-500/5 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center mb-20">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 font-mono tracking-tight">
+        <div className="text-center mb-10 md:mb-20">
+          <h1 className="text-3xl md:text-6xl font-bold text-white mb-4 md:mb-6 font-mono tracking-tight">
             THE<span className="text-green-500">.</span>BLOG
           </h1>
           <p className="text-zinc-400 max-w-2xl mx-auto text-base md:text-lg">
@@ -52,7 +52,7 @@ export default function BlogListingPage() {
         </div>
 
         {/* Blog Post Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {t.blog.posts.map((post, index) => (
             <article
               key={index}

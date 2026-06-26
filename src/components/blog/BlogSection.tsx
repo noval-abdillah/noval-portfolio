@@ -35,7 +35,7 @@ export default function BlogSection() {
   };
 
   return (
-    <section id="blog" className="py-24 bg-zinc-950 border-t border-zinc-900 relative">
+    <section id="blog" className="py-24 bg-zinc-950 border-t border-zinc-900 relative overflow-hidden">
       {/* Glow decorations */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none" />
       
@@ -49,7 +49,7 @@ export default function BlogSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {t.blog.posts.map((post, index) => (
             <article
               key={index}

@@ -130,3 +130,26 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Prose content mobile overflow fix */
+.prose {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.prose img {
+  border-radius: 0.5rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose pre {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}

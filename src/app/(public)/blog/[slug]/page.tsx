@@ -37,7 +37,7 @@ export default function BlogPostPage({ params }: BlogPageProps) {
   const content = post[language];
 
   return (
-    <article className="min-h-screen bg-zinc-950 pt-16 pb-24 relative">
+    <article className="min-h-screen bg-zinc-950 pt-16 pb-24 relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -45,14 +45,14 @@ export default function BlogPostPage({ params }: BlogPageProps) {
         {/* Back navigation */}
         <button 
           onClick={() => router.back()}
-          className="group flex items-center gap-2 text-zinc-400 hover:text-green-500 transition-colors duration-300 font-mono text-sm mb-12"
+          className="group flex items-center gap-2 text-zinc-400 hover:text-green-500 transition-colors duration-300 font-mono text-sm mb-6 md:mb-12"
         >
           <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
           <span>{language === 'en' ? 'Back' : 'Kembali'}</span>
         </button>
 
         {/* Banner Image */}
-        <div className="relative aspect-video w-full overflow-hidden rounded-xl mb-12 bg-zinc-800 border border-zinc-800">
+        <div className="relative aspect-video w-full overflow-hidden rounded-xl mb-8 md:mb-12 bg-zinc-800 border border-zinc-800">
           <Image
             src={content.image}
             alt={content.title}
@@ -75,7 +75,7 @@ export default function BlogPostPage({ params }: BlogPageProps) {
             {content.title}
           </h1>
 
-          <div className="flex items-center gap-6 text-zinc-500 text-sm font-mono border-y border-zinc-900 py-4">
+          <div className="flex flex-wrap items-center gap-4 md:gap-6 text-zinc-500 text-sm font-mono border-y border-zinc-900 py-4">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               <span>{content.date}</span>
@@ -94,7 +94,7 @@ export default function BlogPostPage({ params }: BlogPageProps) {
         />
 
         {/* Bottom Banner */}
-        <div className="border-t border-zinc-900 mt-16 pt-8 flex justify-center">
+        <div className="border-t border-zinc-900 mt-10 md:mt-16 pt-8 flex justify-center">
           <Link 
             href="/"
             className="px-8 py-3 border border-green-500/30 text-zinc-400 hover:text-green-400 hover:border-green-500 font-mono text-sm rounded-lg transition-all duration-300"
