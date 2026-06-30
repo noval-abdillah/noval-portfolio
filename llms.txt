@@ -1,0 +1,24 @@
+# Noval Abdillah - Full Stack SaaS Developer
+
+Professional portfolio of Noval Abdillah, a Full Stack Software Engineer specializing in Next.js, Node.js, PostgreSQL, Supabase, and AI-assisted engineering.
+
+## Core Capabilities
+- **SaaS Architecture:** Designing robust and secure authentication flows (JWT/RBAC), database schemas, and integration with Stripe.
+- **Frontend Engineering:** Creating performant, interactive, and responsive user interfaces with Tailwind CSS, GSAP, and Lenis.
+- **AI-Assisted Development:** Accelerating development workflows using AI orchestrations without compromising design patterns or security.
+
+## Core Stack
+- Next.js (App Router)
+- React 19
+- TypeScript
+- Node.js
+- PostgreSQL
+- Supabase SSR & Database
+- GSAP, Lenis, Tailwind CSS
+
+## Key Pages
+- [/] - Main landing page showing featured projects and latest insights.
+- [/about] - Detailed profile, technical certifications (Google AI, GitHub Copilot Applied Skills), and professional background.
+- [/projects] - Portfolio of SaaS applications, MVPs, and full-stack projects.
+- [/blog] - Articles sharing engineering insights, Supabase SSR authentication guides, and web animation tutorials.
+- [/contact] - Direct channel for collaboration inquiries.

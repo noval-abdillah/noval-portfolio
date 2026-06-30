@@ -9,11 +9,13 @@ export default function ProjectsClient({ projects, limit }: { projects: Project[
   const { t } = useLanguage();
   const displayProjects = limit ? projects.slice(0, limit) : projects;
 
+  const TitleTag = limit ? 'h2' : 'h1';
+
   return (
     <section id="projects" className="py-24 bg-zinc-950">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t.projects.title}</h2>
+          <TitleTag className="text-4xl md:text-5xl font-bold text-white mb-4">{t.projects.title}</TitleTag>
           <p className="text-zinc-400 max-w-2xl mx-auto">
             {t.projects.subtitle}
           </p>

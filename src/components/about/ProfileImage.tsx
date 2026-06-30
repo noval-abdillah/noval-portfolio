@@ -70,7 +70,7 @@ export default function ProfileImage() {
         {/* Pembungkus Gambar dengan efek Depth (Z-axis) */}
         <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-800" style={{ transform: 'translateZ(40px)' }}>
           <Image 
-            src="/images/Profil.png"
+            src="/images/Profil.jpeg"
             alt="Profil Noval Abdillah"
             fill
             priority

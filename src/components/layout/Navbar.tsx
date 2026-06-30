@@ -54,12 +54,12 @@ export default function Navbar() {
   }, [pathname, language]); // also depend on language so it recalcs width when text changes
 
   return (
-    <nav
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800' : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <nav className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold font-mono text-green-500 hover:text-green-400 transition-colors">
@@ -148,7 +148,7 @@ export default function Navbar() {
             {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </div>
-      </div>
+      </nav>
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
@@ -210,6 +210,6 @@ export default function Navbar() {
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

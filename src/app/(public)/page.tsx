@@ -1,6 +1,7 @@
 import { Hero } from '@/components/home';
 import { Projects } from '@/components/projects';
 import BlogSection from '@/components/blog/BlogSection';
+import FAQSection from '@/components/home/FAQSection';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -19,6 +20,7 @@ export default function HomePage() {
         </div>
       </div>
       <BlogSection />
+      <FAQSection />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import * as THREE from 'three';
 function LanyardCard() {
   const groupRef = useRef<THREE.Group>(null);
   const cardRef = useRef<THREE.Group>(null);
-  const texture = useTexture('/images/Profil.png');
+  const texture = useTexture('/images/Profil.jpeg');
   
   useFrame((state) => {
     if (!groupRef.current) return;

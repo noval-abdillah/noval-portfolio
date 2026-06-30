@@ -41,9 +41,9 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div>
-            <h2 ref={titleRef} className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h1 ref={titleRef} className="text-4xl md:text-5xl font-bold text-white mb-6">
               {t.contact.title}
-            </h2>
+            </h1>
             <p className="text-zinc-300 text-lg leading-relaxed mb-8">
               {t.contact.subtitle}
             </p>

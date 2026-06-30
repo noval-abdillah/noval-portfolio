@@ -18,6 +18,10 @@ const mono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://novalabdillah.com'),
+  alternates: {
+    canonical: '/',
+  },
   title: 'Noval Abdillah | Fullstack Developer & Ai Coder',
   description: 'Portfolio of Noval Abdillah, a Full Stack Developer specializing in building production-grade SaaS applications with Next.js, Node.js, and PostgreSQL. Expert in AI-assisted development using GitHub Copilot.',
   keywords: [
@@ -83,11 +87,59 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const orgAndPersonSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://novalabdillah.com/#organization',
+        'name': 'Noval Abdillah',
+        'url': 'https://novalabdillah.com',
+        'logo': 'https://novalabdillah.com/favicon.ico',
+        'sameAs': [
+          'https://github.com/noval-abdillah',
+          'https://www.linkedin.com/in/noval-abdillah-415589316/'
+        ]
+      },
+      {
+        '@type': 'Person',
+        '@id': 'https://novalabdillah.com/#person',
+        'name': 'Noval Abdillah',
+        'jobTitle': 'Full Stack Developer & AI Engineer',
+        'worksFor': {
+          '@type': 'Organization',
+          'name': 'CiptaInterior / CKS Group'
+        },
+        'url': 'https://novalabdillah.com',
+        'image': 'https://novalabdillah.com/images/Profil.jpeg',
+        'sameAs': [
+          'https://github.com/noval-abdillah',
+          'https://www.linkedin.com/in/noval-abdillah-415589316/'
+        ],
+        'knowsAbout': [
+          'Next.js',
+          'TypeScript',
+          'Node.js',
+          'PostgreSQL',
+          'Supabase',
+          'Tailwind CSS',
+          'Three.js',
+          'GSAP',
+          'AI-Assisted Development'
+        ]
+      }
+    ]
+  };
+
   return (
     <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
       <body
         className={`${inter.variable} ${mono.variable} font-sans bg-zinc-950 text-zinc-100`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgAndPersonSchema) }}
+        />
         <LanguageProvider>
         <CustomCursor>
           <SmoothScroll>

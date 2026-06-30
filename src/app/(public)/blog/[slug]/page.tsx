@@ -1,108 +1,183 @@
-'use client';
-
-import React, { use } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useLanguage } from '@/context/LanguageContext';
+import BlogPostClient from '@/components/blog/BlogPostClient';
 import { blogPosts } from '@/lib/blog-data';
-import { ArrowLeft, Calendar, Clock } from 'lucide-react';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-interface BlogPageProps {
+interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export default function BlogPostPage({ params }: BlogPageProps) {
-  const { slug } = use(params);
-  const { language } = useLanguage();
-  const router = useRouter();
+export async function generateStaticParams() {
+  return blogPosts.map((post) => ({
+    slug: post.slug,
+  }));
+}
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   const post = blogPosts.find((p) => p.slug === slug);
+  if (!post) return {};
 
+  return {
+    title: `${post.en.title} | Noval Abdillah`,
+    description: post.en.excerpt,
+    alternates: {
+      canonical: `https://novalabdillah.com/blog/${slug}`,
+    },
+    openGraph: {
+      type: 'article',
+      url: `https://novalabdillah.com/blog/${slug}`,
+      title: post.en.title,
+      description: post.en.excerpt,
+      images: [
+        {
+          url: `https://novalabdillah.com${post.en.image}`,
+          alt: post.en.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.en.title,
+      description: post.en.excerpt,
+    },
+  };
+}
+
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params;
+  const post = blogPosts.find((p) => p.slug === slug);
   if (!post) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-center px-6 py-24">
-        <h1 className="text-4xl font-bold font-mono text-green-500 mb-4">404</h1>
-        <p className="text-zinc-400 mb-8">Article not found / Artikel tidak ditemukan</p>
-        <Link 
-          href="/" 
-          className="px-6 py-3 bg-green-500 text-zinc-950 font-bold font-mono rounded-lg hover:bg-green-400 transition-colors"
-        >
-          Back to Home / Kembali ke Beranda
-        </Link>
-      </div>
-    );
+    notFound();
   }
 
-  const content = post[language];
+  const publishedDate = post.slug === 'how-i-use-ai-agents-to-build-10x-faster' ? '2026-06-25T00:00:00Z' :
+                        post.slug === 'mastering-nextjs-16-and-supabase-authentication' ? '2026-06-18T00:00:00Z' : '2026-06-10T00:00:00Z';
+  
+  const modifiedDate = '2026-06-30T00:00:00Z'; // Today's date as fresh update signal
+
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    'headline': post.en.title,
+    'description': post.en.excerpt,
+    'image': `https://novalabdillah.com${post.en.image}`,
+    'datePublished': publishedDate,
+    'dateModified': modifiedDate,
+    'author': {
+      '@type': 'Person',
+      'name': 'Noval Abdillah',
+      'jobTitle': 'Full Stack Developer',
+      'url': 'https://novalabdillah.com/about'
+    },
+    'publisher': {
+      '@type': 'Organization',
+      'name': 'Noval Abdillah',
+      'logo': {
+        '@type': 'ImageObject',
+        'url': 'https://novalabdillah.com/favicon.ico'
+      }
+    },
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': `https://novalabdillah.com/blog/${slug}`
+    }
+  };
+
+  let tutorialSchema: Record<string, unknown> | null = null;
+
+  if (slug === 'mastering-nextjs-16-and-supabase-authentication') {
+    tutorialSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      'name': 'How to Master Next.js 16 and Supabase Authentication',
+      'description': post.en.excerpt,
+      'step': [
+        {
+          '@type': 'HowToStep',
+          'name': 'Setting up Server-Side Clients',
+          'text': 'Initialize createServerClient from @supabase/ssr in Next.js Server Components, allowing automatic cookie read and write back to the client browser.',
+          'url': `https://novalabdillah.com/blog/${slug}#1-setting-up-server-side-clients`
+        },
+        {
+          '@type': 'HowToStep',
+          'name': 'Protecting Routes in Middleware',
+          'text': 'Secure routes globally using middleware.ts to inspect session state before serving static layout files, boosting security and performance.',
+          'url': `https://novalabdillah.com/blog/${slug}#2-protecting-routes-in-middleware`
+        },
+        {
+          '@type': 'HowToStep',
+          'name': 'Implementing Role-Based Access Control (RBAC)',
+          'text': 'Validate role attributes in database metadata or tables to restrict/allow actions for admin control panels.',
+          'url': `https://novalabdillah.com/blog/${slug}#3-implementing-rbac-role-based-access-control`
+        },
+        {
+          '@type': 'HowToStep',
+          'name': 'Handling Session Refresh',
+          'text': 'Call supabase.auth.getUser() in middleware to force session refresh and ensure cookie session tokens stay synchronized.',
+          'url': `https://novalabdillah.com/blog/${slug}#4-handling-session-refresh-and-token-lifecycle`
+        },
+        {
+          '@type': 'HowToStep',
+          'name': 'Production Deployment Best Practices',
+          'text': 'Set secure environment variables, enable RLS, rate limit endpoints, and add audit logs to secure your deployment.',
+          'url': `https://novalabdillah.com/blog/${slug}#5-best-practices-for-production`
+        }
+      ]
+    };
+  } else if (slug === 'creating-premium-web-animations-with-gsap-and-lenis') {
+    tutorialSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      'name': 'How to Create Premium Web Animations with GSAP and Lenis',
+      'description': post.en.excerpt,
+      'step': [
+        {
+          '@type': 'HowToStep',
+          'name': 'Setting up Lenis Smooth Scroll',
+          'text': 'Initialize Lenis smooth scroll and bind it to requestAnimationFrame to sync mouse wheel input speed.',
+          'url': `https://novalabdillah.com/blog/${slug}#1-setting-up-lenis-smooth-scroll`
+        },
+        {
+          '@type': 'HowToStep',
+          'name': 'ScrollTrigger Orchestration',
+          'text': 'Use GSAP ScrollTrigger to trigger elements animations when they enter the viewport, using stagger for sequential fade-ins.',
+          'url': `https://novalabdillah.com/blog/${slug}#2-scrolltrigger-orchestration`
+        },
+        {
+          '@type': 'HowToStep',
+          'name': 'Performance Optimization',
+          'text': 'Use gsap.context() inside React useEffect for proper unmounting, and animate transform and opacity instead of layout properties.',
+          'url': `https://novalabdillah.com/blog/${slug}#3-performance-optimization-tips`
+        },
+        {
+          '@type': 'HowToStep',
+          'name': 'Handling Mobile Devices',
+          'text': 'Disable smooth scroll on mobile if necessary and let touch events resolve natively to prevent scroll conflicts.',
+          'url': `https://novalabdillah.com/blog/${slug}#4-mobile-considerations`
+        },
+        {
+          '@type': 'HowToStep',
+          'name': 'Memory Management',
+          'text': 'Call ctx.revert() or kill() on timeline instances inside useEffect cleanups to prevent client browser memory leaks.',
+          'url': `https://novalabdillah.com/blog/${slug}#5-designing-for-performance`
+        }
+      ]
+    };
+  }
+
+  const schemas: Record<string, unknown>[] = [articleSchema as Record<string, unknown>];
+  if (tutorialSchema) {
+    schemas.push(tutorialSchema);
+  }
 
   return (
-    <article className="min-h-screen bg-zinc-950 pt-16 pb-24 relative overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none" />
-
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
-        {/* Back navigation */}
-        <button 
-          onClick={() => router.back()}
-          className="group flex items-center gap-2 text-zinc-400 hover:text-green-500 transition-colors duration-300 font-mono text-sm mb-6 md:mb-12"
-        >
-          <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
-          <span>{language === 'en' ? 'Back' : 'Kembali'}</span>
-        </button>
-
-        {/* Banner Image */}
-        <div className="relative aspect-video w-full overflow-hidden rounded-xl mb-8 md:mb-12 bg-zinc-800 border border-zinc-800">
-          <Image
-            src={content.image}
-            alt={content.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 800px"
-            priority
-          />
-        </div>
-
-        {/* Post Header */}
-        <header className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="px-3 py-1 text-xs font-mono font-medium rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
-              {content.category}
-            </span>
-          </div>
-
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-            {content.title}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-4 md:gap-6 text-zinc-500 text-sm font-mono border-y border-zinc-900 py-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              <span>{content.date}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>{content.time}</span>
-            </div>
-          </div>
-        </header>
-
-        {/* Post Content */}
-        <div 
-          className="prose prose-invert max-w-none text-zinc-300"
-          dangerouslySetInnerHTML={{ __html: content.contentHtml }}
-        />
-
-        {/* Bottom Banner */}
-        <div className="border-t border-zinc-900 mt-10 md:mt-16 pt-8 flex justify-center">
-          <Link 
-            href="/"
-            className="px-8 py-3 border border-green-500/30 text-zinc-400 hover:text-green-400 hover:border-green-500 font-mono text-sm rounded-lg transition-all duration-300"
-          >
-            {language === 'en' ? 'VIEW ALL POSTS' : 'LIHAT SEMUA POSTINGAN'}
-          </Link>
-        </div>
-      </div>
-    </article>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
+      />
+      <BlogPostClient slug={slug} />
+    </>
   );
 }

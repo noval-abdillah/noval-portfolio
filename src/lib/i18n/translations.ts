@@ -87,6 +87,36 @@ export const translations = {
       quickLinks: 'Quick Links',
       connect: 'Connect',
       rights: 'All rights reserved.',
+    },
+    faq: {
+      title: 'Frequently Asked Questions',
+      subtitle: 'Find answers to common questions about my development process, services, and technologies.',
+      questions: [
+        {
+          q: 'What services does Noval Abdillah offer?',
+          a: 'Noval Abdillah offers full-stack web development, custom SaaS engineering, MVP creation, and AI integration services. This includes building frontends with Next.js, robust backends with Node.js/PostgreSQL, authentication architectures, and integrating LLMs to build intelligent applications.'
+        },
+        {
+          q: 'How does AI-assisted development benefit the client?',
+          a: 'AI-assisted development accelerates boilerplate generation, allowing me to build software up to 10x faster. Because I guide the AI with a strong software engineering foundation, the architectural code remains clean and reliable while clients receive high-quality production-grade platforms much sooner.'
+        },
+        {
+          q: 'What tech stack is used for building applications?',
+          a: 'The primary tech stack consists of Next.js, React, Node.js, PostgreSQL, and Supabase. I also leverage Tailwind CSS for responsive styling, and GSAP or Lenis for smooth UI interactions, ensuring modern, performant, and scale-ready web applications.'
+        },
+        {
+          q: 'Can you build a complete MVP from scratch?',
+          a: 'Yes, I specialize in taking ideas from concept to a fully functional Minimum Viable Product (MVP). I handle database design, user authentication, payment gateway integration (like Stripe), responsive UI, and secure deployment to production platforms.'
+        },
+        {
+          q: 'How is the security of SaaS applications ensured?',
+          a: 'Security is implemented at every layer. I configure strict Row-Level Security (RLS) policies in Supabase, implement secure cookie-based JWT authentication, sanitize user inputs to prevent vulnerabilities, and utilize environment variables for sensitive API keys.'
+        },
+        {
+          q: 'What is the typical timeline for building a custom SaaS?',
+          a: 'A standard MVP usually takes 2 to 6 weeks, depending on complexity. Using AI orchestration for boilerplate, I can significantly compress standard development timelines, delivering complete, functional feature sets much faster than traditional development processes.'
+        }
+      ]
     }
   },
   id: {
@@ -175,6 +205,36 @@ export const translations = {
       quickLinks: 'Tautan Cepat',
       connect: 'Terhubung',
       rights: 'Hak cipta dilindungi.',
+    },
+    faq: {
+      title: 'Pertanyaan yang Sering Diajukan',
+      subtitle: 'Temukan jawaban untuk pertanyaan umum tentang proses pengembangan, layanan, dan teknologi saya.',
+      questions: [
+        {
+          q: 'Layanan apa saja yang ditawarkan oleh Noval Abdillah?',
+          a: 'Noval Abdillah menawarkan jasa pengembangan web full-stack, rekayasa platform SaaS kustom, pembuatan MVP, dan integrasi kecerdasan buatan (AI). Layanan ini mencakup pembuatan frontend dengan Next.js, backend dengan Node.js/PostgreSQL, autentikasi, serta integrasi LLM.'
+        },
+        {
+          q: 'Bagaimana pengembangan berbantuan AI menguntungkan klien?',
+          a: 'Pengembangan berbantuan AI mempercepat pembuatan kode dasar sehingga proses pembangunan aplikasi menjadi hingga 10x lebih cepat. Dengan fondasi rekayasa perangkat lunak yang kuat, saya mengarahkan AI agar kode tetap bersih dan andal tanpa mengorbankan kualitas arsitektur.'
+        },
+        {
+          q: 'Tumpukan teknologi apa yang digunakan untuk membangun aplikasi?',
+          a: 'Tumpukan teknologi utama saya terdiri dari Next.js, React, Node.js, PostgreSQL, dan Supabase. Saya juga menggunakan Tailwind CSS untuk styling responsif serta GSAP dan Lenis untuk animasi interaksi UI yang mulus dan siap skala.'
+        },
+        {
+          q: 'Apakah Anda bisa membangun MVP lengkap dari nol?',
+          a: 'Ya, saya berpengalaman mengubah ide konsep menjadi produk MVP (Minimum Viable Product) yang siap pakai. Saya menangani desain database, alur autentikasi, integrasi gerbang pembayaran, desain antarmuka responsif, hingga deployment aman ke server produksi.'
+        },
+        {
+          q: 'Bagaimana Anda memastikan keamanan aplikasi SaaS yang dibangun?',
+          a: 'Keamanan diterapkan di setiap lapisan aplikasi. Saya mengonfigurasi aturan Row-Level Security (RLS) ketat di Supabase, menggunakan autentikasi JWT berbasis cookie aman, melakukan sanitasi input, serta menyembunyikan kredensial di variabel lingkungan.'
+        },
+        {
+          q: 'Berapa lama waktu pengerjaan untuk membangun platform SaaS?',
+          a: 'Proses pembuatan MVP standar biasanya memakan waktu antara 2 hingga 6 minggu tergantung kompleksitasnya. Dengan orkestrasi AI untuk kode boilerplate, saya dapat memangkas durasi pengerjaan secara signifikan untuk menghasilkan fitur fungsional secara lebih cepat.'
+        }
+      ]
     }
   }
 };

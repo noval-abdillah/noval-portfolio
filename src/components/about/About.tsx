@@ -48,9 +48,9 @@ export default function About() {
   return (
     <section ref={sectionRef} className="py-24 bg-zinc-950 min-h-screen">
       <div className="max-w-7xl mx-auto px-6">
-        <h2 ref={titleRef} className="text-4xl md:text-5xl font-bold text-white mb-16 text-center">
+        <h1 ref={titleRef} className="text-4xl md:text-5xl font-bold text-white mb-16 text-center">
           {t.about.title}
-        </h2>
+        </h1>
 
         <div ref={contentRef} className="grid lg:grid-cols-2 gap-12 items-center">
           
