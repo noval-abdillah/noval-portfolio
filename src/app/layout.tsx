@@ -18,7 +18,7 @@ const mono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://novalabdillah.com'),
+  metadataBase: new URL('https://noval-portfolio-gold.vercel.app'),
   alternates: {
     canonical: '/',
   },
@@ -55,13 +55,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://novalabdillah.com',
+    url: 'https://noval-portfolio-gold.vercel.app',
     title: 'Noval Abdillah | Fullstack Developer & Ai Coder',
     description: 'Building production-grade SaaS applications with modern technologies',
     siteName: 'Noval Abdillah Portfolio',
     images: [
       {
-        url: 'https://novalabdillah.com/og-image.jpg',
+        url: 'https://noval-portfolio-gold.vercel.app/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Noval Abdillah Portfolio',
@@ -92,10 +92,10 @@ export default function RootLayout({
     '@graph': [
       {
         '@type': 'Organization',
-        '@id': 'https://novalabdillah.com/#organization',
+        '@id': 'https://noval-portfolio-gold.vercel.app/#organization',
         'name': 'Noval Abdillah',
-        'url': 'https://novalabdillah.com',
-        'logo': 'https://novalabdillah.com/favicon.ico',
+        'url': 'https://noval-portfolio-gold.vercel.app',
+        'logo': 'https://noval-portfolio-gold.vercel.app/favicon.ico',
         'sameAs': [
           'https://github.com/noval-abdillah',
           'https://www.linkedin.com/in/noval-abdillah-415589316/'
@@ -103,11 +103,11 @@ export default function RootLayout({
       },
       {
         '@type': 'Person',
-        '@id': 'https://novalabdillah.com/#person',
+        '@id': 'https://noval-portfolio-gold.vercel.app/#person',
         'name': 'Noval Abdillah',
         'jobTitle': 'Full Stack Developer & AI Engineer',
-        'url': 'https://novalabdillah.com',
-        'image': 'https://novalabdillah.com/images/Profil.jpeg',
+        'url': 'https://noval-portfolio-gold.vercel.app',
+        'image': 'https://noval-portfolio-gold.vercel.app/images/Profil.jpeg',
         'sameAs': [
           'https://github.com/noval-abdillah',
           'https://www.linkedin.com/in/noval-abdillah-415589316/'
