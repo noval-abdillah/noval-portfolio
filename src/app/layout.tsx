@@ -106,10 +106,6 @@ export default function RootLayout({
         '@id': 'https://novalabdillah.com/#person',
         'name': 'Noval Abdillah',
         'jobTitle': 'Full Stack Developer & AI Engineer',
-        'worksFor': {
-          '@type': 'Organization',
-          'name': 'CiptaInterior / CKS Group'
-        },
         'url': 'https://novalabdillah.com',
         'image': 'https://novalabdillah.com/images/Profil.jpeg',
         'sameAs': [

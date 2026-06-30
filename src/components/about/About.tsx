@@ -69,9 +69,6 @@ export default function About() {
             <p className="text-zinc-300 leading-relaxed text-lg">
               {t.about.p2}
             </p>
-            <p className="text-zinc-300 leading-relaxed text-lg">
-              {t.about.p3}
-            </p>
 
             <div className="p-6 border border-zinc-800 rounded-lg bg-zinc-900/50 mt-8">
               <h4 className="text-lg font-semibold text-white mb-4">{t.about.techStack}</h4>

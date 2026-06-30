@@ -51,7 +51,7 @@ export const blogPosts: BlogPost[] = [
 
         <h2 class="text-2xl font-bold text-white mt-8 mb-4 font-mono">3. Real-World Case Study: Building a CMS Dashboard</h2>
         <p class="text-zinc-300 leading-relaxed mb-6">
-          Recently, I built a complete CMS dashboard for CiptaInterior using AI-assisted development. The project included role-based access control, image upload to Supabase Storage, and a real-time project management interface. By structuring the project specification first, the AI generated 80% of the boilerplate code, allowing me to focus on business logic and edge cases.
+          Recently, I built a complete CMS dashboard for an interior design enterprise using AI-assisted development. The project included role-based access control, image upload to Supabase Storage, and a real-time project management interface. By structuring the project specification first, the AI generated 80% of the boilerplate code, allowing me to focus on business logic and edge cases.
         </p>
         <p class="text-zinc-300 leading-relaxed mb-6">
           The key was breaking the dashboard into atomic components: a data table with sorting and filtering, a modal form for project creation, and a notification system for user feedback. Each component was specified with its props interface, state dependencies, and styling requirements before the AI wrote a single line of code.
@@ -105,7 +105,7 @@ export const blogPosts: BlogPost[] = [
 
         <h2 class="text-2xl font-bold text-white mt-8 mb-4 font-mono">3. Studi Kasus: Membangun Dashboard CMS</h2>
         <p class="text-zinc-300 leading-relaxed mb-6">
-          Baru-baru ini, saya membangun dashboard CMS lengkap untuk CiptaInterior menggunakan pengembangan berbantuan AI. Proyek ini mencakup kontrol akses berbasis peran (RBAC), unggah gambar ke Supabase Storage, dan antarmuka manajemen proyek real-time. Dengan menyusun spesifikasi proyek terlebih dahulu, AI menghasilkan 80% kode boilerplate, sehingga saya bisa fokus pada logika bisnis dan kasus batas (edge cases).
+          Baru-baru ini, saya membangun dashboard CMS lengkap untuk sebuah perusahaan desain interior menggunakan pengembangan berbantuan AI. Proyek ini mencakup kontrol akses berbasis peran (RBAC), unggah gambar ke Supabase Storage, dan antarmuka manajemen proyek real-time. Dengan menyusun spesifikasi proyek terlebih dahulu, AI menghasilkan 80% kode boilerplate, sehingga saya bisa fokus pada logika bisnis dan kasus batas (edge cases).
         </p>
         <p class="text-zinc-300 leading-relaxed mb-6">
           Kuncinya adalah memecah dashboard menjadi komponen atomik: tabel data dengan pengurutan dan penyaringan, form modal untuk pembuatan proyek, dan sistem notifikasi untuk umpan balik pengguna. Setiap komponen dispesifikasikan dengan antarmuka props, dependensi state, dan persyaratan gaya sebelum AI menulis satu baris kode pun.
