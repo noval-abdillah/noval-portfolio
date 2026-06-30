@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     creator: '@novalabdillah',
   },
   verification: {
-    google: 'your-google-verification-code',
+    google: 'google8006ea16ce0826eb',
     yandex: 'your-yandex-verification-code',
   },
 };
